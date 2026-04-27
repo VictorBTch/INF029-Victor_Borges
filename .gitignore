@@ -1,0 +1,54 @@
+# Arquivos compilados
+*.o
+*.out
+*.exe
+*.app
+*.i
+*.s
+
+# Bibliotecas
+*.a
+*.so
+*.dll
+*.dylib
+
+# Build directories
+build/
+bin/
+obj/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Autotools
+aclocal.m4
+autom4te.cache/
+configure
+config.log
+config.status
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.bak
+
+# IDEs
+.vscode/
+.idea/
+
+# Visual Studio (caso use)
+*.vcxproj*
+*.sln
+*.user
+*.pdb
+*.ilk
+
+# Mac / Linux lixo
+.DS_Store
+Thumbs.db
