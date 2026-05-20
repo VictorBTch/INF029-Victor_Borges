@@ -10,10 +10,10 @@
 //  O aluno deve preencher seus dados abaixo, e implementar as questões do trabalho
 
 //  ----- Dados do Aluno -----
-//  Nome:
-//  email:
-//  Matrícula:
-//  Semestre:
+//  Nome: Victor Borges Oliveira 
+//  email: victorbool14@gmail.com
+//  Matrícula: 20252160002 
+//  Semestre: 2 semestre
 
 //  Copyright © 2016 Renato Novais. All rights reserved.
 // Última atualização: 07/05/2021 - 19/08/2016 - 17/10/2025
@@ -92,18 +92,79 @@ int teste(int a)
 int q1(char data[])
 {
     int datavalida = 1;
+    int dia = 0, mes = 0, ano = 0;
+    int i = 0;
+    int diasNoMes;
 
-    //quebrar a string data em strings sDia, sMes, sAno
+    //ler o dia
+    while (data[i] != '/' && data[i] != '\0') {
+        if (data[i] < '0' || data[i] > '9')
+            datavalida = 0;
+        else
+        dia = dia * 10 + (data[i] - '0');
+        i++;
+    }
 
+    //primeira barra
+    if (data[i] != '/')
+        datavalida = 0;
+    else
+        i++;
 
-    //printf("%s\n", data);
+    //ler o mês
+    while (data[i] != '/' && data[i] != '\0') {
+        if (data[i] < '0' || data[i] > '9')
+            datavalida = 0;
+        else
+        mes = mes * 10 + (data[i] - '0');
+        i++;
+    }
+
+    //segunda barra
+    if (data[i] != '/')
+        datavalida = 0;
+    else
+        i++;
+
+    //ler o ano
+    while (data[i] != '\0') {
+        if (data[i] < '0' || data[i] > '9')
+            datavalida = 0;
+        else
+        ano = ano * 10 + (data[i] - '0');
+        i++;
+    }
+
+    //validar mês
+    if (mes < 1 || mes > 12)
+        datavalida = 0;
+
+    //dias do mês
+    if (mes == 2)
+        diasNoMes = 28;
+    else if (mes == 4 || mes == 6 || mes == 9 || mes == 11)
+        diasNoMes = 30;
+    else
+        diasNoMes = 31;
+
+    //verificação ano bissexto
+    if ((ano % 400 == 0) ||
+        (ano % 4 == 0 && ano % 100 != 0)) {
+        if (mes == 2)
+            diasNoMes = 29;
+    }
+
+    //validar dia
+    if (dia < 1 || dia > diasNoMes)
+        datavalida = 0;
+
+    // printf("%s\n", data);
 
     if (datavalida)
         return 1;
     else
         return 0;
 }
-
 
 
 /*
@@ -122,28 +183,87 @@ int q1(char data[])
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
-
     //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
+    DataQuebrada dataInicial;
+    DataQuebrada dataFinal;
 
-    if (q1(datainicial) == 0){
+    dataInicial = quebraData(datainicial);
+    dataFinal = quebraData(datafinal);
+
+    if (q1(datainicial) == 0) {
         dma.retorno = 2;
         return dma;
-    }else if (q1(datafinal) == 0){
+    }
+    else if (q1(datafinal) == 0) {
         dma.retorno = 3;
         return dma;
-    }else{
+    }
+    else {
         //verifique se a data final não é menor que a data inicial
+        if (dataInicial.iAno > dataFinal.iAno) {
+            dma.retorno = 4;
+            return dma;
+        }
+        else if (dataInicial.iAno == dataFinal.iAno &&
+                 dataInicial.iMes > dataFinal.iMes) {
+            dma.retorno = 4;
+            return dma;
+        }
+        else if (dataInicial.iAno == dataFinal.iAno &&
+                 dataInicial.iMes == dataFinal.iMes &&
+                 dataInicial.iDia > dataFinal.iDia) {
+            dma.retorno = 4;
+            return dma;
+        }
 
-        //calcule a distancia entre as datas
+        //calcule a distância entre as datas
+        dma.qtdAnos = dataFinal.iAno - dataInicial.iAno;
+        dma.qtdMeses = dataFinal.iMes - dataInicial.iMes;
+        dma.qtdDias = dataFinal.iDia - dataInicial.iDia;
 
+        //ajuste dos dias
+        if (dma.qtdDias < 0) {
+            int mesAnterior = dataFinal.iMes - 1;
+            int anoAnterior = dataFinal.iAno;
+            int diasNoMesAnterior;
+
+            //se o mês anterior for dezembro do ano anterior
+            if (mesAnterior == 0) {
+                mesAnterior = 12;
+                anoAnterior--;
+            }
+
+            //define quantos dias tem o mês anterior
+            if (mesAnterior == 2)
+                diasNoMesAnterior = 28;
+            else if (mesAnterior == 4 || mesAnterior == 6 ||
+                     mesAnterior == 9 || mesAnterior == 11)
+                diasNoMesAnterior = 30;
+            else
+                diasNoMesAnterior = 31;
+
+            //ajusta fevereiro em ano bissexto
+            if (mesAnterior == 2) {
+                if ((anoAnterior % 400 == 0) ||
+                    (anoAnterior % 4 == 0 && anoAnterior % 100 != 0))
+                    diasNoMesAnterior = 29;
+            }
+
+            dma.qtdDias = dma.qtdDias + diasNoMesAnterior;
+            dma.qtdMeses--;
+        }
+
+        //ajuste dos meses
+        if (dma.qtdMeses < 0) {
+            dma.qtdMeses = dma.qtdMeses + 12;
+            dma.qtdAnos--;
+        }
 
         //se tudo der certo
         dma.retorno = 1;
         return dma;
-
     }
-
 }
 
 /*
@@ -158,7 +278,32 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
  */
 int q3(char *texto, char c, int isCaseSensitive)
 {
-    int qtdOcorrencias = -1;
+    int qtdOcorrencias = 0;
+    int i = 0;
+    char charAtual;
+    char charConvertido;
+
+    while (texto[i] != '\0') {
+        if (isCaseSensitive == 1) {
+            if (texto[i] == c)
+                contadorLetras++;
+        }
+        else {
+            charAtual = texto[i];
+            charConvertido = c;
+
+            if (charAtual >= 'A' && charAtual <= 'Z')
+                charAtual = charAtual + 32;
+
+            if (charConvertido >= 'A' && charConvertido <= 'Z')
+                charConvertido = charConvertido + 32;
+
+            if (charAtual == charConvertido)
+                contadorLetras++;
+        }
+
+        i++;
+    }
 
     return qtdOcorrencias;
 }
@@ -180,11 +325,32 @@ int q3(char *texto, char c, int isCaseSensitive)
  */
 int q4(char *strTexto, char *strBusca, int posicoes[30])
 {
-    int qtdOcorrencias = -1;
+    int qtdOcorrencias = 0;
+    int i = 0;
+    int x;
+
+    while (strTexto[i] != '\0') {
+
+        if (strTexto[i] == strBusca[0]) {
+
+            x = 0;
+
+            while (strBusca[x] != '\0' && strTexto[i + x] == strBusca[x]) {
+                x++;
+            }
+
+            if (strBusca[x] == '\0') {
+                posicoes[qtdOcorrencias * 2] = i + 1;
+                posicoes[qtdOcorrencias * 2 + 1] = i + x;
+                qtdOcorrencias++;
+            }
+        }
+
+        i++;
+    }
 
     return qtdOcorrencias;
 }
-
 /*
  * Q5 = inverte número
  * @objetivo
@@ -197,8 +363,14 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
 
 int q5(int num)
 {
+    int invertido = 0;
 
-    return num;
+    while (num > 0) {
+        int digito = num % 10;
+        invertido = invertido * 10 + digito;
+        num = num / 10;
+    }
+    return invertido;
 }
 
 /*
@@ -213,7 +385,35 @@ int q5(int num)
 
 int q6(int numerobase, int numerobusca)
 {
-    int qtdOcorrencias;
+    int qtdOcorrencias = 0;
+    int contador = 0;
+    int temp = numerobusca;
+    int potencia = 1;
+    int i = 0;
+    int trecho;
+
+    /* Descobrir quantos dígitos tem numerobusca */
+    while (temp > 0) {
+        temp = temp / 10;
+        contador++;
+    }
+
+    /* Calcular 10^contador */
+    while (i < contador) {
+        potencia = potencia * 10;
+        i++;
+    }
+
+    /* Percorrer o número base */
+    while (numerobase >= numerobusca) {
+        trecho = numerobase % potencia;
+
+        if (trecho == numerobusca)
+            qtdOcorrencias++;
+
+        numerobase = numerobase / 10;
+    }
+
     return qtdOcorrencias;
 }
 
@@ -227,10 +427,44 @@ int q6(int numerobase, int numerobusca)
  *   1 se achou 0 se não achou
  */
 
-int q7(char matriz[8][10], char palavra[5])
-{
-    int achou;
-    return achou;
+int q7(char matriz[8][10], char palavra[5]) {
+    int i, j, dir, k;
+
+    int di[8] = {0, 0, 1, -1, 1, -1, -1, 1};
+    int dj[8] = {1, -1, 0, 0, 1, -1, 1, -1};
+
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 10; j++) {
+
+            if (matriz[i][j] == palavra[0]) {
+
+                for (dir = 0; dir < 8; dir++) {
+
+                    int encontrou = 1;
+
+                    for (k = 0; k < 4; k++) {
+
+                        int ni = i + di[dir] * k;
+                        int nj = j + dj[dir] * k;
+
+                        if (ni < 0 || ni >= 8 || nj < 0 || nj >= 10) {
+                            encontrou = 0;
+                            break;
+                        }
+
+                        if (matriz[ni][nj] != palavra[k]) {
+                            encontrou = 0;
+                            break;
+                        }
+                    }
+
+                    if (encontrou) return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
 }
 
 
