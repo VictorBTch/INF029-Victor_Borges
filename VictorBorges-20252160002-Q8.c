@@ -42,7 +42,7 @@ int main() {
     return 0;
 }
 
-//funções
+//-funções-
 
 void inicializar(char tab[TAM][TAM]) {
     for (int i = 0; i < TAM; i++) {
