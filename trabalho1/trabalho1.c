@@ -286,7 +286,7 @@ int q3(char *texto, char c, int isCaseSensitive)
     while (texto[i] != '\0') {
         if (isCaseSensitive == 1) {
             if (texto[i] == c)
-                contadorLetras++;
+                qtdOcorrencias++;
         }
         else {
             charAtual = texto[i];
@@ -299,7 +299,7 @@ int q3(char *texto, char c, int isCaseSensitive)
                 charConvertido = charConvertido + 32;
 
             if (charAtual == charConvertido)
-                contadorLetras++;
+                qtdOcorrencias++;
         }
 
         i++;
